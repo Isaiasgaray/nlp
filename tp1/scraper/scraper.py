@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 import requests
 import locale
+import os
 
 # Configuracion para formato de hora y fecha
 LOCALE_AR = 'es_AR.UTF-8'
@@ -59,11 +60,18 @@ def procesar_link(link):
 # Funcion principal
 def main():
     URL = 'https://www.lacapital.com.ar/secciones/ultimo-momento.html'
+    FILE_NAME = 'lacapital.csv'
     r = requests.get(URL)
     soup = BeautifulSoup(r.text, 'lxml')
 
     columnas = ['titulo', 'texto', 'categoria', 'url', 'fecha']
     datos    = list()
+
+    if not os.path.isfile(f'datasets/{FILE_NAME}'):
+        os.makedirs('datasets', exist_ok=True)
+        with open(FILE_NAME, 'w') as f:
+            f.write(','.join(columnas) + '\n')
+
 
     for tag in soup.find_all('a', {'class': 'cover-link'}):
         datos.append(procesar_link(tag.get('href')))
@@ -71,8 +79,9 @@ def main():
     df = pd.DataFrame(datos, columns=columnas)
     df.drop_duplicates(inplace=True)
 
-    print(df)
-
+    df.to_csv(f'datasets/{FILE_NAME}',
+              index=False,
+              mode='a')
 
 if __name__ == '__main__':
     main()
