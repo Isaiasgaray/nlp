@@ -25,33 +25,54 @@ def procesar_link(link):
     r = requests.get(link)
     soup = BeautifulSoup(r.text, 'lxml')
 
-    # Titulo
-    titulo = soup.find('h1', {'class': 'nota-title'}).text.strip()
+    try:
+        # Titulo
+        titulo = soup.find('h1', {'class': 'nota-title'}).text.strip()
 
-    # Categoria
-    categoria = soup.find('div', {'class': 'breadcrumbs'})\
-                    .find_all('span')[1]\
-                    .text.strip()
+        # Categoria
+        # categoria_div = soup.find('div', {'class': 'breadcrumbs'})\
+        #                     .find_all('span')
 
-    # Fecha
-    fecha = soup.find('span', {'class': 'nota-fecha'}).text
-    hora  = soup.find('span', {'class': 'nota-hora'}).text
+        # if len(categoria_div) != 3:
+        #     categoria = 'Sin categoría'
+        # else:
+        #     categoria = categoria_div[1].text.strip()
 
-    fecha_iso = datetime.strptime(fecha + ' ' + hora, DATE_FORMAT).isoformat()
+        categoria = soup.find('div', {'class': 'breadcrumbs'})\
+                        .findChildren()[2].text.strip()
 
-    # Texto
-    parrafos = list()
+        # Fecha
+        fecha = soup.find('span', {'class': 'nota-fecha'}).text
+        hora  = soup.find('span', {'class': 'nota-hora'}).text
 
-    for tag in soup.find_all('div', {'class': 'article-body'}):
-        parrafos += tag.find_all('p')
+        fecha_iso = datetime.strptime(fecha + ' ' + hora, DATE_FORMAT).isoformat()
 
-    texto = '\n'.join(
-                        parrafo.text.strip() for parrafo in parrafos
-                        if parrafo.text and '>>' not in parrafo.text
-                     )
+        # Texto
+        parrafos = list()
 
-    return titulo, texto, categoria, fecha_iso
+        for tag in soup.find_all('div', {'class': 'article-body'}):
+            parrafos += tag.find_all('p')
 
-link = 'https://www.lacapital.com.ar/politica/en-santa-fe-se-espera-un-escrutinio-mas-agil-este-domingo-n10095957.html'
+        texto = '\n'.join(
+                            parrafo.text.strip() for parrafo in parrafos
+                            if parrafo.text and '>>' not in parrafo.text
+                         )
 
-# print(procesar_link(link))
+    except Exception as e:
+        print(f'{link} -----> {e}')
+        return tuple([None] * 5)
+
+    return titulo, texto, categoria, link, fecha_iso
+
+def main():
+
+    r = requests.get(URL)
+
+    soup = BeautifulSoup(r.text, 'lxml')
+
+    for tag in soup.find_all('a', {'class': 'cover-link'}):
+
+        pass
+
+if __name__ == '__main__':
+    main()
