@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import requests
 import locale
@@ -60,28 +60,39 @@ def procesar_link(link):
 # Funcion principal
 def main():
     URL = 'https://www.lacapital.com.ar/secciones/ultimo-momento.html'
-    FILE_NAME = 'lacapital.csv'
+    FILE_NAME     = 'lacapital.csv'
+    DIR_NAME      = './datasets'
+    DATASET_PATH  = f'{DIR_NAME}/{FILE_NAME}'
     r = requests.get(URL)
     soup = BeautifulSoup(r.text, 'lxml')
+    fecha_hoy  = datetime.now()
+    fecha_ayer = fecha_hoy - timedelta(days=1)
 
     columnas = ['titulo', 'texto', 'categoria', 'url', 'fecha']
     datos    = list()
 
-    if not os.path.isfile(f'datasets/{FILE_NAME}'):
-        os.makedirs('datasets', exist_ok=True)
-        with open(FILE_NAME, 'w') as f:
+    if not os.path.isfile(DATASET_PATH):
+        os.makedirs(DIR_NAME, exist_ok=True)
+        with open(DATASET_PATH, 'w') as f:
             f.write(','.join(columnas) + '\n')
 
-
     for tag in soup.find_all('a', {'class': 'cover-link'}):
-        datos.append(procesar_link(tag.get('href')))
+        datos_link = procesar_link(tag.get('href'))
+        fecha_link = datetime.fromisoformat(datos_link[-1])
+
+        if not fecha_ayer <= fecha_link <= fecha_hoy:
+            break
+
+        datos.append(datos_link)
 
     df = pd.DataFrame(datos, columns=columnas)
     df.drop_duplicates(inplace=True)
 
-    df.to_csv(f'datasets/{FILE_NAME}',
+    df.to_csv(DATASET_PATH,
               index=False,
+              header=False,
               mode='a')
+
 
 if __name__ == '__main__':
     main()
