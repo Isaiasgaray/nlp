@@ -1,4 +1,7 @@
-[Link al repositorio](https://github.com/Isaiasgaray/nlp)
+# Enlaces
+
+- [Link al repositorio](https://github.com/Isaiasgaray/nlp)
+- [Link al bot de Telegram](https://t.me/tuia_nlp_bot)
 
 # Creación del dataset
 Para este trabajo práctico vamos a obtener los datos de la página web del diario **La Capital**. En esta web se puede realizar el scraping de forma sencilla, ya que no hace falta loguearse ni interactuar con **JavaScript** para acceder al HTML con el texto de las noticias, por lo tanto solamente necesitamos usar las librearías `requests` y `beautifulsoup4`.
