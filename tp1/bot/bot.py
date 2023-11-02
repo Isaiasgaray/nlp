@@ -1,5 +1,6 @@
-from dotenv import load_dotenv
 from utils import col_to_snake_case, serie_to_str
+from dotenv import load_dotenv
+from pagerank import summarize
 import telebot
 import pandas as pd
 import os
@@ -57,7 +58,8 @@ def handle_id(message):
         respuesta = f'El índice {idx} no está en el dataset.'
     else:
         url = df.loc[idx]['url']
-        respuesta = f'{titulo}\n{url}'
+        resumen = summarize(df.loc[idx]['texto'], num_sentences=2)
+        respuesta = f'{titulo}\n\n{resumen}\n\n{url}'
 
     bot.send_message(message.chat.id, respuesta)
 
