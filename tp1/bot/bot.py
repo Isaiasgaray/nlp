@@ -59,9 +59,12 @@ def handle_id(message):
     else:
         url = df.loc[idx]['url']
         resumen = summarize(df.loc[idx]['texto'], num_sentences=2)
+        titulo = telebot.formatting.hbold(titulo)
         respuesta = f'{titulo}\n\n{resumen}\n\n{url}'
 
-    bot.send_message(message.chat.id, respuesta)
+    bot.send_message(message.chat.id, 
+                     respuesta,
+                     parse_mode='HTML')
 
 @bot.message_handler(func=lambda m: True)
 def handle_search(message):
