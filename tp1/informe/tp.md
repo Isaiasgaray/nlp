@@ -28,59 +28,49 @@ Detalle del modelo:
 - Por ejemplo, la categoría `ovacion` cuenta con un $0.2$ de precisión, pero es la categoría con menor soporte, por lo que estos resultados no son inesperados.
 
 # Normalización y Nube de palabras.
-Para cada categoría, realizar las siguientes tareas:
+
+Para cada categoría, se realizan las siguientes tareas:
 - Procesar el texto mediante recursos de normalización y limpieza.
 - Con el resultado anterior, realizar conteo de palabras y mostrar la importancia de las
 mismas mediante una nube de palabras.
 Escribir un análisis general del resultado obtenido.
 
 Para procesar el texto realizamos las siguientes tareas:
-1) Eliminamos los valores NAN, ya que al hacer el scraping donde la noticia tenia una historieta
-nos traia como texto un NAN.
-2) Usamos la expresion regular [^\w\s] para eliminar cualquier caracter que no sea una palabra o
-un espacio en blanco. Decicidimos esto porque estos caracteres no agregan informacion adicional y es 
+1) Eliminamos los valores `NAN`, ya que al hacer el scraping donde la noticia tenía una historieta
+el campo `texto` está vacío.
+
+2) Usamos la expresión regular `[^\w\s]` para eliminar cualquier caracter que no sea una palabra o
 necesario para reducir el tamaño de nuestros datos y aumentar la eficiencia computacional.
-3) Eliminamos los acentos para que cuando se realize la busqueda esta sea insensible a los acentos.
-Asi nuestro texto va estar homogenizado y no habra inconcistencias en la acentuacion.
-4) Eliminamos las palabras stopwords, para que nuestro texto no tenga las palabras mas comunes. 
-Usamos la libreria nltk para eliminar las stopwords y al realizar la nuebe de texto notamos que 
-segui habiendo palabras muy comunes como si, dos, tres, año o años asi que decimos agregarlas como
-stopwords y eliminarlas de nuestro texto.
-5) Hicimos correcion de ortografia, para limpiar el texto y que no haya multiples palabras que 
-tengan el mismo significado. Realizar la correcion de ortografia lleva unos minutos. 
 
-Realizamos la nube de palabras para ver la importancia de las mismas y podemos ver que las categorias
-estan bien representadas en la nube de palabras y que si no le ponemos el titulo a cada categoria podemos deducir 
-de que tema se esta hablando. Por ejemplo Ovacion las palabras como central, newells, equipo, partido, gol, punto, 
-velez, minuto, ya nos haria predecir que estamos hablando de deportes.
-![Nube de palabras de ovación](img/nube_palabras.png)
+3) Eliminamos los acentos para que cuando se realize la búsqueda esta sea insensible a los acentos.
+Así nuestro texto estará homogenizado y no habrá inconsistencias en la acentuación.
+4) Eliminamos las palabras *stopwords*, para que nuestro texto no tenga las palabras más comunes. 
+Usamos la librería `nltk` para eliminar las *stopwords* y al realizar la nuebe de texto notamos que 
+seguia habiendo palabras muy comunes como **si**, **dos**, **tres**, **año**, **años**, etc. Por lo que decidimos agregarlas como *stopwords* y así eliminarlas del corpus.
+5) Hicimos correción ortográfica, para limpiar el texto y que no haya multiples palabras que 
+tengan el mismo significado. Este proceso lleva unos minutos.
 
-# Similitud de títulos en la categorías ovación
-Use los modelos de embedding propuestos sobre el final de la Unidad 2 para evaluar la
-similitud entre los títulos de las noticias de una de las categorías.
-Reflexione sobre las limitaciones del modelo en base a los resultados obtenidos, en
-contraposición a los resultados que hubiera esperado obtener.
+Realizamos la nube de palabras para ver la importancia de las mismas y notamos que las categorías están bien representadas en el gráfico, incluso si no sabemos el título de la categoria podríamos deducir de qué tema se está hablando. Por ejemplo, para Ovación las palabras más comunes que son *central*, *newells*, *equipo*, *partido*, *gol*, *punto*, *velez*, *minuto* nos harían saber que se trata de la sección deportiva del diario.
 
-Para evaluar la similitud entre los titulos usamos el modelo Sentence-BERT que tiene las 
-siguientes caracteristicas:
-A) Es multilingue 
-B) Distingue entre mayusculas y minusculas.
-C) Es un modelo base osea que es la reduccion de un modelo mas grande.
-D) Su arquitectura esta basado en Transforme. 
-E) Usa enbeddings de oraciones osea que su representacion vectorial contiene el contenido semantico de la oracion.
+![Nube de palabras de ovación](img/nube_palabras.png){width=40%}
 
-Para abordar este problema, Sentence-BERT mejora  a BERT, y utiliza redes siamesas y tripletas para crear embeddings de
-oraciones que pueden compararse utilizando similitud coseno. Esto hace que la búsqueda semántica sea computacionalmente
-factible, incluso cuando se trata de comparar un gran número de oraciones, reduciendo el tiempo de entrenamiento de varias
-horas a solo unos segundos.
+# Similitud de títulos en la categoría Ovación
+Use los modelos de embedding propuestos sobre el final de la Unidad 2 para evaluar la similitud entre los títulos de las noticias de una de las categorías.
+Reflexione sobre las limitaciones del modelo en base a los resultados obtenidos, en contraposición a los resultados que hubiera esperado obtener.
 
-En nuestro codigo vamos a comparar por similitud de coseno de los titulos de la seccion ovacion. Vamos a codificar los titulos 
-para luego obtener la similitud. Despues comparamos la similitud entre todas las oraciones y vamos a crear una tabla para 
-mostrar de forma decreciente los pares de oraciones que tiene mayor similitud. 
-Nosotros esperabamos que en las oraciones donde habia palabras que se repetian como por ejemplo newells y tigre, la similitud 
-iba a ser mas alta y donde haya oraciones que no tengan palabras repetidas la similitud iba  ser mas baja. Y por lo que vemos 
-en la tabla de comparacion esto sucedio asi. 
+Para evaluar la similitud entre los títulos usamos el modelo *Sentence-BERT* que tiene las siguientes características:
 
+- Es multilingüe.
+- Distingue entre mayúsculas y minúsculas.
+- Es un modelo base, es decir, es la reducción de un modelo más grande.
+- Su arquitectura está basada en *Transformers*. 
+- Usa *embeddings* de oraciones, su representación vectorial contiene el contenido semántico de la oración.
+
+Para abordar este problema, *Sentence-BERT* mejora a *BERT*, y utiliza redes siamesas y tripletas para crear *embeddings* de oraciones que pueden compararse utilizando la similitud del coseno. Esto hace que la búsqueda semántica sea computacionalmente factible, incluso cuando se trata de comparar un gran número de oraciones, reduciendo el tiempo de entrenamiento de varias horas a solo unos segundos. 
+
+En nuestro código vamos a comparar por similitud del coseno a los títulos de la sección Ovación. Codificaremos los títulos para luego obtener la similitud. Después compararemos la similitud entre todas las oraciones y se mostrará una tabla para observar de forma decreciente los pares de oraciones que tiene mayor similitud.
+
+Esperabamos que en las oraciones donde había palabras que se repetían, por ejemplo *newells* y *tigre*, la similitud sea alta y donde haya oraciones que no tengan palabras repetidas la similitud sea baja. Por lo que vemos en la tabla de comparación esto se cumple.
 
 # Resumen de las noticias
 
@@ -98,8 +88,6 @@ Probamos los siguientes tres modelos para realizar el resumen de la noticia de p
 Elegimos este modelo porque es el que más descargas tiene para la tarea de resumir y el idioma español. El modelo está entrenado solo con texto en español. Sin embargo los resultados siguen sin ser buenos.
 
 ![Resumen de BERT2BERT](img/b2b.png)
-
-\pagebreak
 
 - **[Bart-Large-CNN](https://huggingface.co/facebook/bart-large-cnn)**: Es el modelo para resumir texto con más descargas de *Hugging Face*. Con este modelo se ven los mejores resultados, aunque en el resumen hay frases en inglés. Otro problema, al menos con este ejemplo, es que corta la frase antes de terminarla como se ve al final de su resumen.
 
