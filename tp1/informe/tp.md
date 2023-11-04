@@ -27,7 +27,60 @@ Detalle del modelo:
 - Modelo de regresión logistica, en el cual se tiene como resultado una precisión de $0.54$, en la mayoría de los casos las predicciones no van a ser erróneas. Este resultado es aceptable para el tamaño de este $dataset$ y el uso de tan pocas categorías hace que varíe muy poco, se podría mejorar agregando más datos o ajustando mejor el modelo.
 - Por ejemplo, la categoría `ovacion` cuenta con un $0.2$ de precisión, pero es la categoría con menor soporte, por lo que estos resultados no son inesperados.
 
-# Similitud de títulos en la categoría X
+# Normalización y Nube de palabras.
+Para cada categoría, realizar las siguientes tareas:
+- Procesar el texto mediante recursos de normalización y limpieza.
+- Con el resultado anterior, realizar conteo de palabras y mostrar la importancia de las
+mismas mediante una nube de palabras.
+Escribir un análisis general del resultado obtenido.
+
+Para procesar el texto realizamos las siguientes tareas:
+1) Eliminamos los valores NAN, ya que al hacer el scraping donde la noticia tenia una historieta
+nos traia como texto un NAN.
+2) Usamos la expresion regular [^\w\s] para eliminar cualquier caracter que no sea una palabra o
+un espacio en blanco. Decicidimos esto porque estos caracteres no agregan informacion adicional y es 
+necesario para reducir el tamaño de nuestros datos y aumentar la eficiencia computacional.
+3) Eliminamos los acentos para que cuando se realize la busqueda esta sea insensible a los acentos.
+Asi nuestro texto va estar homogenizado y no habra inconcistencias en la acentuacion.
+4) Eliminamos las palabras stopwords, para que nuestro texto no tenga las palabras mas comunes. 
+Usamos la libreria nltk para eliminar las stopwords y al realizar la nuebe de texto notamos que 
+segui habiendo palabras muy comunes como si, dos, tres, año o años asi que decimos agregarlas como
+stopwords y eliminarlas de nuestro texto.
+5) Hicimos correcion de ortografia, para limpiar el texto y que no haya multiples palabras que 
+tengan el mismo significado. Realizar la correcion de ortografia lleva unos minutos. 
+
+Realizamos la nube de palabras para ver la importancia de las mismas y podemos ver que las categorias
+estan bien representadas en la nube de palabras y que si no le ponemos el titulo a cada categoria podemos deducir 
+de que tema se esta hablando. Por ejemplo Ovacion las palabras como central, newells, equipo, partido, gol, punto, 
+velez, minuto, ya nos haria predecir que estamos hablando de deportes.
+![Nube de palabras de ovación](img/nube_palabras.png)
+
+# Similitud de títulos en la categorías ovación
+Use los modelos de embedding propuestos sobre el final de la Unidad 2 para evaluar la
+similitud entre los títulos de las noticias de una de las categorías.
+Reflexione sobre las limitaciones del modelo en base a los resultados obtenidos, en
+contraposición a los resultados que hubiera esperado obtener.
+
+Para evaluar la similitud entre los titulos usamos el modelo Sentence-BERT que tiene las 
+siguientes caracteristicas:
+A) Es multilingue 
+B) Distingue entre mayusculas y minusculas.
+C) Es un modelo base osea que es la reduccion de un modelo mas grande.
+D) Su arquitectura esta basado en Transforme. 
+E) Usa enbeddings de oraciones osea que su representacion vectorial contiene el contenido semantico de la oracion.
+
+Para abordar este problema, Sentence-BERT mejora  a BERT, y utiliza redes siamesas y tripletas para crear embeddings de
+oraciones que pueden compararse utilizando similitud coseno. Esto hace que la búsqueda semántica sea computacionalmente
+factible, incluso cuando se trata de comparar un gran número de oraciones, reduciendo el tiempo de entrenamiento de varias
+horas a solo unos segundos.
+
+En nuestro codigo vamos a comparar por similitud de coseno de los titulos de la seccion ovacion. Vamos a codificar los titulos 
+para luego obtener la similitud. Despues comparamos la similitud entre todas las oraciones y vamos a crear una tabla para 
+mostrar de forma decreciente los pares de oraciones que tiene mayor similitud. 
+Nosotros esperabamos que en las oraciones donde habia palabras que se repetian como por ejemplo newells y tigre, la similitud 
+iba a ser mas alta y donde haya oraciones que no tengan palabras repetidas la similitud iba  ser mas baja. Y por lo que vemos 
+en la tabla de comparacion esto sucedio asi. 
+
 
 # Resumen de las noticias
 
