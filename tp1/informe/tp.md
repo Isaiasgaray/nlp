@@ -29,17 +29,17 @@ Detalle del modelo:
 
 # Normalización y Nube de palabras.
 
-Para cada categoría, se realizan las siguientes tareas:
-- Procesar el texto mediante recursos de normalización y limpieza.
-- Con el resultado anterior, realizar conteo de palabras y mostrar la importancia de las
-mismas mediante una nube de palabras.
-Escribir un análisis general del resultado obtenido.
+**Para cada categoría, se realizan las siguientes tareas:**
+**- Procesar el texto mediante recursos de normalización y limpieza.**
+**- Con el resultado anterior, realizar conteo de palabras y mostrar la importancia de las**
+**mismas mediante una nube de palabras.**
+**Escribir un análisis general del resultado obtenido.**
 
 Para procesar el texto realizamos las siguientes tareas:
 1) Eliminamos los valores `NAN`, ya que al hacer el scraping donde la noticia tenía una historieta
 el campo `texto` está vacío.
 
-2) Usamos la expresión regular `[^\w\s]` para eliminar cualquier caracter que no sea una palabra o
+2) Usamos la expresión regular `[^\w\s]` para eliminar cualquier caracter que no sea una letra, es 
 necesario para reducir el tamaño de nuestros datos y aumentar la eficiencia computacional.
 
 3) Eliminamos los acentos para que cuando se realize la búsqueda esta sea insensible a los acentos.
@@ -55,8 +55,9 @@ Realizamos la nube de palabras para ver la importancia de las mismas y notamos q
 ![Nube de palabras de ovación](img/nube_palabras.png){width=40%}
 
 # Similitud de títulos en la categoría Ovación
-Use los modelos de embedding propuestos sobre el final de la Unidad 2 para evaluar la similitud entre los títulos de las noticias de una de las categorías.
-Reflexione sobre las limitaciones del modelo en base a los resultados obtenidos, en contraposición a los resultados que hubiera esperado obtener.
+
+**Use los modelos de embedding propuestos sobre el final de la Unidad 2 para evaluar la similitud entre los títulos de las noticias de una de las categorías.**
+**Reflexione sobre las limitaciones del modelo en base a los resultados obtenidos, en contraposición a los resultados que hubiera esperado obtener.**
 
 Para evaluar la similitud entre los títulos usamos el modelo *Sentence-BERT* que tiene las siguientes características:
 
